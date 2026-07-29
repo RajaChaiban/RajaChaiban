@@ -1,12 +1,14 @@
 # Hi I'm Raja Chaiban 👋
 
-**Turning Ideas into Reality | Finance × AI** · New York
+**Finance × AI · New York**
 
-I build AI-powered products end to end — agentic platforms, voice agents, ML prediction systems, and quantitative finance tools. Most of my work sits at the intersection of **finance and applied AI**: taking an idea from a notebook to a working platform with real data pipelines behind it.
+I'm an engineer based in New York, and most of my nights and weekends go into building at the intersection of **finance and AI**. What I enjoy most is taking a half-formed idea and actually shipping it — going from a messy notebook to something that runs, with real data and AI agents doing the work behind it.
+
+Lately I've been deep in **agentic systems**: letting AI handle a task end-to-end while I keep a human in the loop where it counts. And since I can't help rooting for my teams, a fair few of my projects are just ML models trying to call games before they happen. ⚽ 🏀 🏈
 
 ---
 
-## 🛠️ What I Build & Ship
+## 🛠️ What I've Been Building
 
 **🤖 AI & Agentic Systems**
 - Agentic CRM systems and agentic automations — AI agent platforms for recruiting, job search, KYC, and deal flow
@@ -65,42 +67,42 @@ I build AI-powered products end to end — agentic platforms, voice agents, ML p
 
 ---
 
-## 🕸️ Explore My Work as an Interactive Graph
+## 🕸️ My Projects, as a Map
 
-Prefer to explore visually? I built an **interactive project graph** — every project clustered around the models, APIs and stacks it shares. **Click any project to see the exact coding stack I used**, hover to trace its connections, and filter by domain.
+I turned everything below into an **interactive graph** — projects naturally cluster around the tools and models they share. Click a project to see what went into it, drag things around, or filter by area. It's the most fun way to get a feel for how my work connects.
 
-[![Interactive Project Graph](https://img.shields.io/badge/%F0%9F%95%B8%EF%B8%8F_Launch_the_Interactive_Project_Graph-0b1220?style=for-the-badge&labelColor=0b1220&color=38bdf8)](https://rajachaiban.github.io/RajaChaiban/)
+[![Interactive Project Map](https://img.shields.io/badge/%F0%9F%97%BA%EF%B8%8F_Open_the_Interactive_Project_Map-2646D4?style=for-the-badge&labelColor=2646D4&color=2646D4)](https://rajachaiban.github.io/RajaChaiban/)
 
 > 🔗 **Live:** https://rajachaiban.github.io/RajaChaiban/ — hosted free via GitHub Pages from the `/docs` folder of this repo.
 
 ---
 
-## 🚀 Featured Projects
+## 🚀 A Few Things I've Built
 
-Click a repo to open it — the **Stack** column lists the core technologies behind each build. The **Result** column is where impact lives; the `‹…›` slots are placeholders for me to fill with real numbers before publishing.
+A closer look at some of my favorite projects — click any repo to dig in.
 
-| Project | What it does | Stack | Result |
-|---|---|---|---|
-| [Finance_Agentic_Platform_Argo](https://github.com/RajaChaiban/Finance_Agentic_Platform_Argo) | S&P 500 knockout option pricer — Black-Scholes, Greeks, QuantLib validation | `Python` `QuantLib` `FastAPI` `NumPy` `Gemini` | _‹priced within X% of QuantLib on N contracts›_ |
-| [Predicting_WorldCup_2026](https://github.com/RajaChaiban/Predicting_WorldCup_2026) | XGBoost + logistic regression + Monte Carlo simulation to predict every World Cup game | `Python` `XGBoost` `scikit-learn` `pandas` | _‹X% accuracy vs Y% baseline›_ |
-| [CBB_Predictive_Dashboard](https://github.com/RajaChaiban/CBB_Predictive_Dashboard) | Dashboard powered by an MCP server and ML models to predict college basketball games | `Python` `MCP` `XGBoost` `Dash` `Plotly` | _‹win-prediction accuracy over N games›_ |
-| [MCP_College_Basketball](https://github.com/RajaChaiban/MCP_College_Basketball) | MCP server exposing college basketball data to AI models | `Python` `MCP` `aiohttp` `pandas` `ESPN API` | _‹tools exposed / calls served›_ |
-| [SketchMotion](https://github.com/RajaChaiban/SketchMotion) | Turns prompts into hand-drawn animations and stylized sketches | `Python` `FastAPI` `Gemini` `Pillow` `Redis` | _‹render time / prompts run›_ |
-| [Resume_Builder](https://github.com/RajaChaiban/Resume_Builder) | End-to-end platform that turns your resume into a visual | `TypeScript` `React` `Three.js` `Vite` | _‹resumes processed / users›_ |
-| [Conversation_Transcription](https://github.com/RajaChaiban/Conversation_Transcription) | Mobile app for real-time transcription with on-device storage and AI summaries | `Dart` `Flutter` | _‹transcription latency / accuracy›_ |
-| [Finance_AI_Podcast](https://github.com/RajaChaiban/Finance_AI_Podcast) | Pipeline that fetches financial & AI news and turns it into a podcast | `Python` `Gemini` `PyTorch` `FastAPI` `Telegram` | _‹episodes generated / runtime›_ |
-| [VoiceAgent](https://github.com/RajaChaiban/VoiceAgent) | AI voice agent for automated phone conversations | `Python` `VAPI` `websockets` | _‹voice round-trip latency›_ |
-| Agentic CRM System | AI agents that enrich contacts, prioritize outreach, and surface the next best action | `Python` `Claude` `MCP` `RAG` | _‹pipeline hours saved / week›_ |
-| Agentic KYC & Entity Search | Autonomously gathers and verifies public data, scores risk, human-in-the-loop review | `Python` `Gemini` `RAG` `Pinecone` | _‹per-entity review time X→Y min›_ |
-| Agentic Automation Workflows | Agentic AI running business processes end-to-end with human-in-the-loop checkpoints | `Python` `Claude` `MCP` | _‹% of steps automated›_ |
+| Project | What it does | Stack |
+|---|---|---|
+| [Finance_Agentic_Platform_Argo](https://github.com/RajaChaiban/Finance_Agentic_Platform_Argo) | S&P 500 knockout option pricer — Black-Scholes, Greeks, QuantLib validation | `Python` `QuantLib` `FastAPI` `NumPy` `Gemini` |
+| [Predicting_WorldCup_2026](https://github.com/RajaChaiban/Predicting_WorldCup_2026) | XGBoost + logistic regression + Monte Carlo simulation to predict every World Cup game | `Python` `XGBoost` `scikit-learn` `pandas` |
+| [CBB_Predictive_Dashboard](https://github.com/RajaChaiban/CBB_Predictive_Dashboard) | Dashboard powered by an MCP server and ML models to predict college basketball games | `Python` `MCP` `XGBoost` `Dash` `Plotly` |
+| [MCP_College_Basketball](https://github.com/RajaChaiban/MCP_College_Basketball) | MCP server exposing college basketball data to AI models | `Python` `MCP` `aiohttp` `pandas` `ESPN API` |
+| [SketchMotion](https://github.com/RajaChaiban/SketchMotion) | Turns prompts into hand-drawn animations and stylized sketches | `Python` `FastAPI` `Gemini` `Pillow` `Redis` |
+| [Resume_Builder](https://github.com/RajaChaiban/Resume_Builder) | End-to-end platform that turns your resume into a visual | `TypeScript` `React` `Three.js` `Vite` |
+| [Conversation_Transcription](https://github.com/RajaChaiban/Conversation_Transcription) | Mobile app for real-time transcription with on-device storage and AI summaries | `Dart` `Flutter` |
+| [Finance_AI_Podcast](https://github.com/RajaChaiban/Finance_AI_Podcast) | Pipeline that fetches financial & AI news and turns it into a podcast | `Python` `Gemini` `PyTorch` `FastAPI` `Telegram` |
+| [VoiceAgent](https://github.com/RajaChaiban/VoiceAgent) | AI voice agent for automated phone conversations | `Python` `VAPI` `websockets` |
+| Agentic CRM System | AI agents that enrich contacts, prioritize outreach, and surface the next best action | `Python` `Claude` `MCP` `RAG` |
+| Agentic KYC & Entity Search | Autonomously gathers and verifies public data, scores risk, human-in-the-loop review | `Python` `Gemini` `RAG` `Pinecone` |
+| Agentic Automation Workflows | Agentic AI running business processes end-to-end with human-in-the-loop checkpoints | `Python` `Claude` `MCP` |
 
 ---
 
 ## 🔁 Loops
 
-Six agentic loops I designed, built, and debugged — the control flow behind real AI systems, each verified against the actual source.
+The "loop" is the heart of any agentic system — the logic that decides what the AI does next. Here are six I've designed and built, each one broken down in the showcase (including the parts that broke and how I fixed them).
 
-**▶ [Explore all six in the interactive showcase](https://claude.ai/code/artifact/78c9134d-a230-45e9-9473-5ea53d839c33)**
+**▶ [Walk through all six in the interactive showcase](https://claude.ai/code/artifact/78c9134d-a230-45e9-9473-5ea53d839c33)**
 
 | # | Loop | Pattern | Stack |
 |---|---|---|---|
