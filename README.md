@@ -69,9 +69,9 @@ I build AI-powered products end to end — agentic platforms, voice agents, ML p
 
 Prefer to explore visually? I built an **interactive project graph** — every project clustered around the models, APIs and stacks it shares. **Click any project to see the exact coding stack I used**, hover to trace its connections, and filter by domain.
 
-[![Interactive Project Graph](https://img.shields.io/badge/%F0%9F%95%B8%EF%B8%8F_Launch_the_Interactive_Project_Graph-0b1220?style=for-the-badge&labelColor=0b1220&color=38bdf8)](https://rajachaiban.github.io/Readme/)
+[![Interactive Project Graph](https://img.shields.io/badge/%F0%9F%95%B8%EF%B8%8F_Launch_the_Interactive_Project_Graph-0b1220?style=for-the-badge&labelColor=0b1220&color=38bdf8)](https://rajachaiban.github.io/RajaChaiban/)
 
-> 🔗 **Live:** https://rajachaiban.github.io/Readme/ — hosted free via GitHub Pages from the `/docs` folder of this repo.
+> 🔗 **Live:** https://rajachaiban.github.io/RajaChaiban/ — hosted free via GitHub Pages from the `/docs` folder of this repo.
 
 ---
 
