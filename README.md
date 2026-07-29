@@ -1,4 +1,4 @@
-# Hi, I'm Raja Chaiban 👋
+# Hi I'm Raja Chaiban 👋
 
 **Turning Ideas into Reality | Finance × AI** · New York
 
