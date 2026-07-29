@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Interactive project graph — Raja Chaiban. Click a project to see the coding stack used.">
+<title>Raja Chaiban · Project Graph</title>
+<style>
+  :root {
+    --bg-base: #080b12;
+    --bg-elevated: #10151f;
+    --bg-panel: rgba(16, 21, 31, 0.72);
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.14);
+    --text-primary: #e9eef7;
+    --text-secondary: #9aa7bd;
+    --text-muted: #5a6a82;
+    --accent: #38bdf8;
+    --cat-ai: #a78bfa;
+    --cat-ml: #38bdf8;
+    --cat-fin: #34d399;
+    --cat-auto: #fbbf24;
+    --cat-app: #fb7185;
+    --tech: #7c8aa5;
+    --mono: "SF Mono", "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-family: var(--sans);
+    overflow: hidden;
+    position: relative;
+  }
+  #graph { position: fixed; inset: 0; display: block; touch-action: none; cursor: grab; }
+  #graph.dragging { cursor: grabbing; }
+
+  /* ambient mesh behind canvas */
+  .mesh { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+  .orb { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.32; }
+  .orb1 { width: 620px; height: 620px; background: radial-gradient(circle, #6d5bd0, transparent 70%); top: -180px; left: -140px; }
+  .orb2 { width: 560px; height: 560px; background: radial-gradient(circle, #14b8a6, transparent 70%); bottom: -200px; right: -120px; }
+  .orb3 { width: 480px; height: 480px; background: radial-gradient(circle, #0ea5e9, transparent 70%); top: 40%; left: 55%; opacity: 0.18; }
+
+  .layer { position: fixed; z-index: 3; }
+
+  /* header */
+  .header { top: 28px; left: 32px; max-width: 440px; pointer-events: none; }
+  .eyebrow {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--accent); display: flex; align-items: center; gap: 8px;
+    margin-bottom: 12px;
+  }
+  .eyebrow .live {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
+    box-shadow: 0 0 0 0 rgba(56,189,248,0.7); animation: pulse 2.2s infinite;
+  }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(56,189,248,0.55);} 70%{box-shadow:0 0 0 9px rgba(56,189,248,0);} 100%{box-shadow:0 0 0 0 rgba(56,189,248,0);} }
+  h1 {
+    font-size: clamp(1.9rem, 4vw, 2.9rem); font-weight: 800; letter-spacing: -1.6px;
+    line-height: 1.02; text-wrap: balance;
+    background: linear-gradient(118deg, #eaf2ff 10%, #8fb7ff 55%, #6ee7d6 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .subtitle { margin-top: 12px; font-size: 0.92rem; line-height: 1.55; color: var(--text-secondary); }
+
+  /* stat strip */
+  .stats { top: 30px; right: 32px; display: flex; gap: 10px; }
+  .stat {
+    background: var(--bg-panel); backdrop-filter: blur(14px);
+    border: 1px solid var(--border); border-radius: 12px; padding: 10px 16px; min-width: 78px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 12px 30px rgba(0,0,0,0.35);
+  }
+  .stat .n { font-family: var(--mono); font-size: 1.4rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.5px; }
+  .stat .l { font-size: 0.64rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-muted); margin-top: 2px; }
+
+  /* legend / filters */
+  .legend {
+    bottom: 28px; left: 32px;
+    background: var(--bg-panel); backdrop-filter: blur(16px);
+    border: 1px solid var(--border); border-radius: 16px; padding: 16px 18px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 18px 44px rgba(0,0,0,0.4);
+    width: 246px;
+  }
+  .legend .cap { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 1.6px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+  .chip {
+    display: flex; align-items: center; gap: 10px; width: 100%;
+    background: none; border: none; color: var(--text-secondary);
+    font-family: var(--sans); font-size: 0.82rem; padding: 6px 8px; border-radius: 8px;
+    cursor: pointer; transition: background 180ms cubic-bezier(0.4,0,0.2,1), color 180ms; text-align: left;
+  }
+  .chip:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); }
+  .chip .dot { width: 11px; height: 11px; border-radius: 50%; flex: none; box-shadow: 0 0 10px currentColor; }
+  .chip .count { margin-left: auto; font-family: var(--mono); font-size: 0.72rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .chip.off { opacity: 0.35; }
+  .chip.off .dot { box-shadow: none; }
+
+  /* detail panel */
+  .detail {
+    bottom: 28px; right: 32px; width: 320px;
+    background: var(--bg-panel); backdrop-filter: blur(16px);
+    border: 1px solid var(--border); border-radius: 16px; padding: 20px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 18px 44px rgba(0,0,0,0.45);
+    transition: transform 260ms cubic-bezier(0.4,0,0.2,1), opacity 260ms;
+  }
+  .detail .kicker { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 1.6px; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .detail .kicker .dot { width: 9px; height: 9px; border-radius: 50%; }
+  .detail h3 { font-size: 1.18rem; font-weight: 750; letter-spacing: -0.4px; line-height: 1.2; margin-bottom: 8px; }
+  .detail p { font-size: 0.86rem; line-height: 1.55; color: var(--text-secondary); }
+  .detail .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+  .detail .tag {
+    font-family: var(--mono); font-size: 0.68rem; padding: 4px 9px; border-radius: 6px;
+    background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--text-secondary);
+  }
+  .detail .empty { color: var(--text-muted); font-size: 0.86rem; line-height: 1.55; }
+  .detail .empty b { color: var(--text-secondary); font-weight: 600; }
+
+  /* hint */
+  .hint {
+    bottom: 30px; left: 50%; transform: translateX(-50%);
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.4px; color: var(--text-muted);
+    background: var(--bg-panel); backdrop-filter: blur(10px); border: 1px solid var(--border);
+    padding: 8px 16px; border-radius: 999px; white-space: nowrap;
+  }
+  .hint b { color: var(--text-secondary); font-weight: 600; }
+
+  @media (max-width: 860px) {
+    .header { max-width: 62vw; }
+    .stats { display: none; }
+    .legend { width: 200px; bottom: 20px; left: 16px; padding: 12px 14px; }
+    .detail { display: none; }
+    .hint { display: none; }
+    .header { left: 18px; top: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="mesh" aria-hidden="true">
+  <span class="orb orb1"></span><span class="orb orb2"></span><span class="orb orb3"></span>
+</div>
+
+<canvas id="graph"></canvas>
+
+<header class="layer header">
+  <div class="eyebrow"><span class="live"></span>Interactive Project Map</div>
+  <h1>The Project Graph</h1>
+  <p class="subtitle">Every project I've built, clustered around the models, APIs and stacks they share. Larger nodes touch more of the ecosystem — white nodes are the shared technologies that hold it together.</p>
+</header>
+
+<div class="layer stats" id="stats"></div>
+
+<div class="layer legend">
+  <div class="cap">Filter by domain</div>
+  <div id="chips"></div>
+</div>
+
+<aside class="layer detail" id="detail">
+  <div class="empty" id="detailEmpty"><b>Hover or tap a node</b> to trace its connections. Click a project to pin its details here.</div>
+  <div id="detailBody" style="display:none">
+    <div class="kicker" id="dKicker"><span class="dot"></span><span id="dCat"></span></div>
+    <h3 id="dTitle"></h3>
+    <p id="dDesc"></p>
+    <div class="tags" id="dTags"></div>
+  </div>
+</aside>
+
+<div class="layer hint"><b>Drag</b> nodes · <b>Hover</b> to explore · <b>Click</b> a project for details</div>
+
+<script>
+(function () {
+  "use strict";
+  var CAT = {
+    ai:   { name: "AI & Agentic Systems", color: "#a78bfa" },
+    ml:   { name: "ML & Predictive Analytics", color: "#38bdf8" },
+    fin:  { name: "Quantitative Finance", color: "#34d399" },
+    auto: { name: "Automation & Scraping", color: "#fbbf24" },
+    app:  { name: "Frontend & Apps", color: "#fb7185" }
+  };
+  var TECHCOLOR = "#8493ac";
+
+  // ---- data (grounded in real repos + generalized private work) ----
+  var projects = [
+    { id: "argo", cat: "fin", label: "Finance Agentic Platform", desc: "S&P 500 knockout-option pricer with Black-Scholes, full Greeks and QuantLib validation, wrapped in an agentic pricing API.", tech: ["QuantLib","FastAPI","Gemini","NumPy"] },
+    { id: "wc", cat: "ml", label: "Predicting World Cup 2026", desc: "XGBoost + logistic regression + Monte Carlo simulation to predict the winner of every match at the 2026 World Cup.", tech: ["XGBoost","Monte Carlo","pandas"] },
+    { id: "nba", cat: "ml", label: "NBA Finals 2026", desc: "XGBoost and Monte Carlo simulation to model the Spurs–Knicks Finals series.", tech: ["XGBoost","Monte Carlo"] },
+    { id: "sb", cat: "ml", label: "Super Bowl 2026", desc: "ML pipeline predicting the Super Bowl winner from team and play-by-play data.", tech: ["XGBoost","LightGBM"] },
+    { id: "cbb", cat: "ml", label: "CBB Predictive Dashboard", desc: "Dashboard fusing a live MCP data server with ML models to predict college-basketball games.", tech: ["MCP","XGBoost","Plotly"] },
+    { id: "cbbmcp", cat: "ai", label: "MCP College Basketball", desc: "MCP server exposing live NCAA scores, rankings and box scores to AI models.", tech: ["MCP","ESPN","pandas"] },
+    { id: "sketch", cat: "ai", label: "SketchMotion", desc: "Turns a prompt into a hand-drawn animation — an LLM compiles the spec, Python renders the frames.", tech: ["Gemini","FastAPI","Pillow"] },
+    { id: "podcast", cat: "ai", label: "Finance AI Podcast", desc: "Fetches financial and AI news, then generates a narrated podcast with neural text-to-speech.", tech: ["Gemini","PyTorch","Telegram"] },
+    { id: "dealflow", cat: "ai", label: "DealFlow VC", desc: "Multi-agent private-equity deal-analysis platform that reads decks and drafts an investment view.", tech: ["Gemini","FastAPI","RAG"] },
+    { id: "insta", cat: "auto", label: "InstaAgent", desc: "Instagram marketing AI agent — AI commenting, smart filtering and automated scheduling.", tech: ["Gemini","Puppeteer","X / Twitter"] },
+    { id: "voice", cat: "ai", label: "VoiceAgent", desc: "Real-time conversational voice agent for fully automated phone calls.", tech: ["VAPI","websockets"] },
+    { id: "linkedin", cat: "auto", label: "LinkedIn Scrapper", desc: "Agent that scrapes jobs, connections and recruiters at scale.", tech: ["Playwright","pandas"] },
+    { id: "resume", cat: "app", label: "Resume Builder", desc: "End-to-end platform that turns a resume into an interactive visual, globe and all.", tech: ["React","Three.js","Vite"] },
+    { id: "transcribe", cat: "app", label: "Conversation Transcription", desc: "Mobile app for real-time transcription with on-device storage and AI-generated summaries.", tech: ["Flutter","Dart"] },
+    // generalized private work
+    { id: "crm", cat: "ai", label: "Agentic CRM (private)", desc: "AI agents that enrich contacts, prioritize outreach and keep a recruiting / sales pipeline moving on their own.", tech: ["Claude","MCP","RAG"] },
+    { id: "kyc", cat: "ai", label: "Agentic KYC Search (private)", desc: "AI-driven KYC that autonomously gathers and verifies public data on people and companies, human-in-the-loop.", tech: ["Gemini","RAG","Pinecone"] },
+    { id: "autoflow", cat: "auto", label: "AI Automation Workflows (private)", desc: "Agentic AI layered over business processes to run them A-to-Z with human-in-the-loop checkpoints.", tech: ["Claude","MCP"] },
+    { id: "sfwiki", cat: "fin", label: "Structured Finance RAG (private)", desc: "Retrieval pipeline over structured-finance knowledge, powering grounded Q&A.", tech: ["LangChain","Pinecone","Claude"] }
+  ];
+
+  // build tech hub set
+  var techMap = {};
+  projects.forEach(function (p) {
+    p.tech.forEach(function (t) { (techMap[t] = techMap[t] || []).push(p.id); });
+  });
+
+  var W = window.innerWidth, H = window.innerHeight;
+  var cx = W / 2, cy = H / 2;
+  var nodes = [], edges = [], byId = {};
+
+  function addNode(n) { nodes.push(n); byId[n.id] = n; return n; }
+
+  // angle helpers for a pleasing initial spread
+  var a = 0, GA = Math.PI * (3 - Math.sqrt(5));
+  projects.forEach(function (p, i) {
+    var rad = 120 + (i % 5) * 34;
+    a += GA;
+    addNode({
+      id: p.id, type: "project", cat: p.cat, label: p.label, desc: p.desc, tech: p.tech,
+      x: cx + Math.cos(a) * rad + (i - 9) * 3, y: cy + Math.sin(a) * rad,
+      vx: 0, vy: 0, deg: 0, r: 10
+    });
+  });
+  Object.keys(techMap).forEach(function (t, i) {
+    a += GA;
+    addNode({
+      id: "tech:" + t, type: "tech", label: t, users: techMap[t],
+      x: cx + Math.cos(a) * (60 + i * 6), y: cy + Math.sin(a) * (60 + i * 6),
+      vx: 0, vy: 0, deg: 0, r: 6
+    });
+  });
+  projects.forEach(function (p) {
+    p.tech.forEach(function (t) { edges.push({ a: p.id, b: "tech:" + t }); });
+  });
+  // adjacency
+  var adj = {};
+  nodes.forEach(function (n) { adj[n.id] = new Set(); });
+  edges.forEach(function (e) { adj[e.a].add(e.b); adj[e.b].add(e.a); byId[e.a].deg++; byId[e.b].deg++; });
+  nodes.forEach(function (n) {
+    if (n.type === "project") n.r = 10 + Math.min(n.deg, 5) * 1.6;
+    else n.r = 5 + Math.min(n.users.length, 6) * 1.2;
+  });
+
+  // ---- canvas setup ----
+  var canvas = document.getElementById("graph");
+  var ctx = canvas.getContext("2d");
+  var DPR = Math.min(window.devicePixelRatio || 1, 2);
+  function resize() {
+    W = window.innerWidth; H = window.innerHeight; cx = W / 2; cy = H / 2;
+    canvas.width = W * DPR; canvas.height = H * DPR;
+    canvas.style.width = W + "px"; canvas.style.height = H + "px";
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  resize();
+  window.addEventListener("resize", resize);
+
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // ---- interaction state ----
+  var hovered = null, selected = null, dragging = null, pointer = { x: -1, y: -1, down: false };
+  var active = { ai: true, ml: true, fin: true, auto: true, app: true };
+
+  function visible(n) {
+    if (n.type === "project") return active[n.cat];
+    // tech visible if any user project visible
+    return n.users.some(function (id) { return active[byId[id].cat]; });
+  }
+
+  function nodeAt(mx, my) {
+    for (var i = nodes.length - 1; i >= 0; i--) {
+      var n = nodes[i]; if (!visible(n)) continue;
+      var d = Math.hypot(n.x - mx, n.y - my);
+      if (d <= n.r + 6) return n;
+    }
+    return null;
+  }
+
+  canvas.addEventListener("pointermove", function (e) {
+    pointer.x = e.clientX; pointer.y = e.clientY;
+    if (dragging) { dragging.fx = e.clientX; dragging.fy = e.clientY; return; }
+    var n = nodeAt(e.clientX, e.clientY);
+    hovered = n;
+    canvas.style.cursor = n ? "pointer" : "grab";
+    if (n) showDetail(n);
+    else if (selected) showDetail(selected);
+    else clearDetail();
+  });
+  canvas.addEventListener("pointerdown", function (e) {
+    var n = nodeAt(e.clientX, e.clientY);
+    if (n) {
+      dragging = n; n.fx = e.clientX; n.fy = e.clientY;
+      canvas.classList.add("dragging");
+      canvas.setPointerCapture(e.pointerId);
+      if (n.type === "project") { selected = n; showDetail(n); }
+    } else { selected = null; clearDetail(); }
+  });
+  canvas.addEventListener("pointerup", function (e) {
+    if (dragging) { dragging.fx = null; dragging.fy = null; dragging = null; canvas.classList.remove("dragging"); }
+  });
+  canvas.addEventListener("pointerleave", function () { hovered = null; if (selected) showDetail(selected); else clearDetail(); });
+
+  // ---- detail panel ----
+  var dEmpty = document.getElementById("detailEmpty"), dBody = document.getElementById("detailBody");
+  var dCat = document.getElementById("dCat"), dTitle = document.getElementById("dTitle"),
+      dDesc = document.getElementById("dDesc"), dTags = document.getElementById("dTags"),
+      dKicker = document.getElementById("dKicker");
+  function showDetail(n) {
+    if (n.type === "tech") {
+      dEmpty.style.display = "none"; dBody.style.display = "block";
+      dKicker.querySelector(".dot").style.background = TECHCOLOR;
+      dKicker.style.color = TECHCOLOR; dCat.textContent = "Shared Technology";
+      dTitle.textContent = n.label;
+      var us = n.users.map(function (id) { return byId[id].label.replace(" (private)", ""); });
+      dDesc.textContent = "Used across " + n.users.length + " project" + (n.users.length > 1 ? "s" : "") + " in the graph.";
+      dTags.innerHTML = us.map(function (u) { return '<span class="tag">' + u + "</span>"; }).join("");
+      return;
+    }
+    dEmpty.style.display = "none"; dBody.style.display = "block";
+    var c = CAT[n.cat].color;
+    dKicker.querySelector(".dot").style.background = c;
+    dKicker.style.color = c; dCat.textContent = CAT[n.cat].name;
+    dTitle.textContent = n.label.replace(" (private)", "");
+    dDesc.textContent = n.desc;
+    dTags.innerHTML = n.tech.map(function (t) { return '<span class="tag">' + t + "</span>"; }).join("");
+  }
+  function clearDetail() { dBody.style.display = "none"; dEmpty.style.display = "block"; }
+
+  // ---- stats + legend ----
+  var counts = { ai:0, ml:0, fin:0, auto:0, app:0 };
+  projects.forEach(function (p) { counts[p.cat]++; });
+  document.getElementById("stats").innerHTML =
+    '<div class="stat"><div class="n">' + projects.length + '</div><div class="l">Projects</div></div>' +
+    '<div class="stat"><div class="n">5</div><div class="l">Domains</div></div>' +
+    '<div class="stat"><div class="n">' + Object.keys(techMap).length + '</div><div class="l">Technologies</div></div>';
+
+  var chips = document.getElementById("chips");
+  Object.keys(CAT).forEach(function (k) {
+    var b = document.createElement("button");
+    b.className = "chip"; b.dataset.k = k;
+    b.innerHTML = '<span class="dot" style="background:' + CAT[k].color + ';color:' + CAT[k].color + '"></span>' +
+                  '<span>' + CAT[k].name + '</span><span class="count">' + counts[k] + '</span>';
+    b.addEventListener("click", function () {
+      active[k] = !active[k]; b.classList.toggle("off", !active[k]);
+      if (selected && !active[selected.cat]) { selected = null; clearDetail(); }
+    });
+    chips.appendChild(b);
+  });
+
+  // ---- physics ----
+  function step() {
+    var REP = 5400, SPRING = 0.022, GRAV = 0.009, DAMP = 0.86, MAXV = 12;
+    for (var i = 0; i < nodes.length; i++) {
+      var n = nodes[i]; if (!visible(n)) continue;
+      for (var j = i + 1; j < nodes.length; j++) {
+        var m = nodes[j]; if (!visible(m)) continue;
+        var dx = n.x - m.x, dy = n.y - m.y, d2 = dx * dx + dy * dy + 0.01;
+        var d = Math.sqrt(d2); var f = REP / d2;
+        var ux = dx / d, uy = dy / d;
+        n.vx += ux * f; n.vy += uy * f; m.vx -= ux * f; m.vy -= uy * f;
+      }
+    }
+    edges.forEach(function (e) {
+      var n = byId[e.a], m = byId[e.b]; if (!visible(n) || !visible(m)) return;
+      var dx = m.x - n.x, dy = m.y - n.y, d = Math.hypot(dx, dy) + 0.01;
+      var rest = 96, f = (d - rest) * SPRING;
+      var ux = dx / d, uy = dy / d;
+      n.vx += ux * f; n.vy += uy * f; m.vx -= ux * f; m.vy -= uy * f;
+    });
+    nodes.forEach(function (n) {
+      if (!visible(n)) return;
+      n.vx += (cx - n.x) * GRAV; n.vy += (cy - n.y) * GRAV;
+      if (n.fx != null) { n.x = n.fx; n.y = n.fy; n.vx = 0; n.vy = 0; return; }
+      n.vx *= DAMP; n.vy *= DAMP;
+      var sp = Math.hypot(n.vx, n.vy); if (sp > MAXV) { n.vx = n.vx / sp * MAXV; n.vy = n.vy / sp * MAXV; }
+      n.x += n.vx; n.y += n.vy;
+      var pad = 40;
+      n.x = Math.max(pad, Math.min(W - pad, n.x));
+      n.y = Math.max(90, Math.min(H - 60, n.y));
+    });
+  }
+
+  // ---- render ----
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    var focus = hovered || selected;
+    var lit = null;
+    if (focus) { lit = new Set([focus.id]); adj[focus.id].forEach(function (x) { lit.add(x); }); }
+
+    // edges
+    edges.forEach(function (e) {
+      var n = byId[e.a], m = byId[e.b]; if (!visible(n) || !visible(m)) return;
+      var on = lit && lit.has(n.id) && lit.has(m.id);
+      var faded = lit && !on;
+      ctx.beginPath();
+      ctx.moveTo(n.x, n.y); ctx.lineTo(m.x, m.y);
+      var col = byId[e.a].type === "project" ? CAT[byId[e.a].cat].color : CAT[byId[e.b].cat] ? CAT[byId[e.b].cat].color : TECHCOLOR;
+      if (on) { ctx.strokeStyle = hexA(col, 0.55); ctx.lineWidth = 1.6; }
+      else if (faded) { ctx.strokeStyle = "rgba(255,255,255,0.03)"; ctx.lineWidth = 0.8; }
+      else { ctx.strokeStyle = "rgba(255,255,255,0.07)"; ctx.lineWidth = 1; }
+      ctx.stroke();
+    });
+
+    // nodes
+    nodes.forEach(function (n) {
+      if (!visible(n)) return;
+      var faded = lit && !lit.has(n.id);
+      var col = n.type === "project" ? CAT[n.cat].color : TECHCOLOR;
+      var alpha = faded ? 0.22 : 1;
+
+      if (n.type === "project" && !faded) {
+        var g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 3.2);
+        g.addColorStop(0, hexA(col, 0.30)); g.addColorStop(1, hexA(col, 0));
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(n.x, n.y, n.r * 3.2, 0, 7); ctx.fill();
+      }
+      // body
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, 7);
+      if (n.type === "project") {
+        ctx.fillStyle = hexA(col, alpha);
+        ctx.shadowColor = faded ? "transparent" : hexA(col, 0.6); ctx.shadowBlur = faded ? 0 : 14;
+      } else {
+        ctx.fillStyle = faded ? "rgba(180,190,210,0.22)" : "#cfd8e6";
+        ctx.shadowColor = "transparent"; ctx.shadowBlur = 0;
+      }
+      ctx.fill(); ctx.shadowBlur = 0;
+      // ring
+      ctx.lineWidth = 1.4;
+      ctx.strokeStyle = n.type === "project" ? hexA("#ffffff", faded ? 0.05 : 0.35) : hexA("#8493ac", faded ? 0.2 : 0.7);
+      ctx.stroke();
+
+      // label
+      var showLabel = n.type === "project" ? !faded : (focus && lit && lit.has(n.id)) || (!focus && n.users.length >= 3);
+      if (showLabel) {
+        var big = focus && (focus.id === n.id);
+        ctx.font = (n.type === "project" ? (big ? "600 13px " : "500 11.5px ") : "600 10px ") + "var(--mono), monospace";
+        ctx.font = ctx.font.replace("var(--mono), ", "");
+        var txt = n.label.replace(" (private)", "");
+        if (n.type === "tech") txt = txt.toUpperCase();
+        ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        var ly = n.y + n.r + (n.type === "project" ? 13 : 11);
+        ctx.fillStyle = "rgba(6,9,15,0.75)";
+        var tw = ctx.measureText(txt).width;
+        roundRect(ctx, n.x - tw / 2 - 5, ly - 8, tw + 10, 16, 5); ctx.fill();
+        ctx.fillStyle = n.type === "project" ? (faded ? "rgba(154,167,189,0.4)" : "#e9eef7") : hexA("#aab7cc", faded ? 0.4 : 0.95);
+        ctx.fillText(txt, n.x, ly);
+      }
+      // private badge dot
+      if (n.type === "project" && /private/.test(n.label) && !faded) {
+        ctx.beginPath(); ctx.arc(n.x + n.r * 0.72, n.y - n.r * 0.72, 3.2, 0, 7);
+        ctx.fillStyle = "#fbbf24"; ctx.fill();
+      }
+    });
+  }
+
+  function roundRect(c, x, y, w, h, r) {
+    c.beginPath(); c.moveTo(x + r, y);
+    c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r);
+    c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
+  }
+  function hexA(hex, al) {
+    hex = hex.replace("#", "");
+    if (hex.length === 3) hex = hex.split("").map(function (c) { return c + c; }).join("");
+    var r = parseInt(hex.substr(0, 2), 16), g = parseInt(hex.substr(2, 2), 16), b = parseInt(hex.substr(4, 2), 16);
+    return "rgba(" + r + "," + g + "," + b + "," + al + ")";
+  }
+
+  var settle = reduce ? 260 : 0;
+  function loop() {
+    if (settle > 0) { for (var k = 0; k < 6; k++) step(); settle--; }
+    else step();
+    draw();
+    requestAnimationFrame(loop);
+  }
+  // warm up so it opens already-formed
+  for (var w = 0; w < 90; w++) step();
+  loop();
+})();
+</script>
+</body>
+</html>
