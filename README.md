@@ -118,5 +118,5 @@ The "loop" is the heart of any agentic system — the logic that decides what th
 ## 📫 Reach Me
 
 - GitHub: [@RajaChaiban](https://github.com/RajaChaiban)
-- LinkedIn: [in/rajachaiban](https://www.linkedin.com/in/rajachaiban)
+- LinkedIn: https://www.linkedin.com/in/rajachaiban
 - Email: rajachaiban@gmail.com
