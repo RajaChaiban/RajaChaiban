@@ -11,8 +11,8 @@ Lately I've been deep in **agentic systems**: letting AI handle a task end-to-en
 ## 🛠️ What I've Been Building
 
 **🤖 AI & Agentic Systems**
-- Agentic CRM systems and agentic automations — AI agent platforms for recruiting, job search, KYC, and deal flow
-- Voice agents & real-time conversation systems (VAPI, transcription, summarization)
+- Agentic CRM systems and agentic automations — Agentic platforms, automated job search, KYC, and deal flow.
+- Voice agents & real-time conversation systems 
 - MCP (Model Context Protocol) servers — building custom tools and data connectors for AI models
 - RAG pipelines and AI automation workflows with human-in-the-loop review
 - Automation loops — recurring agentic loops that run a task on a schedule and ship as interactive HTML dashboards and Claude Artifacts
