@@ -1,31 +1,20 @@
-# Hi I'm Raja Chaiban 👋
+# Hi, I'm Raja Chaiban 👋
 
 **Finance × AI · New York**
 
-I'm an engineer based in New York, and most of my nights and weekends go into building at the intersection of **finance and AI**. What I enjoy most is taking a half-formed idea and actually shipping it — going from a messy notebook to something that runs, with real data and AI agents doing the work behind it.
-
-Lately I've been deep in **agentic systems**: letting AI handle a task end-to-end while I keep a human in the loop where it counts. And since I can't help rooting for my teams, a fair few of my projects are just ML models trying to call games before they happen. ⚽ 🏀 🏈
+I'm an engineer in New York building where finance and AI meet. Most of what I make starts with a workflow that's slow or manual and ends as a system that actually runs: an agent loop doing the work, a FastAPI backend behind it, a Next.js front end on top, deployed on Vercel. I like owning the whole thing end to end, and I keep a human in the loop at the steps that can't be undone. And since I can't help rooting for my teams, a few of my repos are ML models trying to call games before they happen. ⚽ 🏀 🏈
 
 ---
 
 ## 🛠️ What I've Been Building
 
-**🤖 AI & Agentic Systems**
-- Agentic CRM systems and agentic automations — Agentic platforms, automated job search, KYC, and deal flow.
-- Voice agents & real-time conversation systems 
-- MCP (Model Context Protocol) servers — building custom tools and data connectors for AI models
-- RAG pipelines and AI automation workflows with human-in-the-loop review
-- Automation loops — recurring agentic loops that run a task on a schedule and ship as interactive HTML dashboards and Claude Artifacts
-
-**📊 Machine Learning & Data Science**
-- Predictive modeling with XGBoost, logistic regression, and Monte Carlo simulation
-- Sports analytics: World Cup, NBA Finals, Super Bowl, and college basketball prediction models
-- ML-powered dashboards and end-to-end data pipelines
-
-**💹 Quantitative Finance**
-- Options pricing: Black-Scholes, Greeks, knockout/barrier options, QuantLib validation
-- Structured finance knowledge pipelines (RAG over financial data)
-- Automated financial data → insight pipelines (including an AI-generated finance podcast)
+- **Agentic CRM** — multi-agent sourcing, enrichment, and outreach over a live Postgres CRM, with every model result re-validated before it touches the database.
+- **Voice Agent** — real-time phone agent (streaming speech-to-text → LLM → text-to-speech) that qualifies callers, escalates emergencies, and books the appointment in under a second per turn.
+- **KYC copilot** — parallel screening across dozens of public registries over MCP, rolled into one auditable risk score with a human gate on low-confidence cases.
+- **Derivatives copilot** — multi-agent structuring that hands the pricing to QuantLib and Monte Carlo instead of trusting the model with the math.
+- **MCP servers** — custom tools and data connectors (sports, finance, registries) that any AI assistant can call.
+- **Predictive models** — XGBoost, logistic regression, and Monte Carlo for the World Cup, NBA Finals, Super Bowl, and college basketball.
+- **Full-stack delivery** — Postgres and FastAPI behind, Next.js in front, and a Vercel preview URL for every branch so a change is clicked through before it merges.
 
 ---
 
@@ -44,6 +33,8 @@ Lately I've been deep in **agentic systems**: letting AI handle a task end-to-en
 ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=flat&logo=pytorch&logoColor=white)
 ![XGBoost](https://img.shields.io/badge/XGBoost-337AB7?style=flat&logoColor=white)
 ![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black)
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat&logo=nextdotjs&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat&logo=vercel&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
 
@@ -60,7 +51,7 @@ Lately I've been deep in **agentic systems**: letting AI handle a task end-to-en
 - **Backends & APIs** — `fastapi` · `uvicorn` · `flask` · `pydantic` · `sqlalchemy` · `sqlmodel` · `alembic` · `express` · `websockets`
 - **Data & Infra** — `postgresql` · `asyncpg` · `redis` · `mongodb` · `docker`
 - **Scraping & Automation** — `playwright` · `selenium` · `puppeteer` · `beautifulsoup4` · `httpx` · `aiohttp` · `requests`
-- **Frontend** — `react` · `vite` · `three.js` · `framer-motion`
+- **Frontend & Deploy** — `next.js` · `react` · `vite` · `three.js` · `framer-motion` · `vercel` · `railway`
 - **Dev Tooling** — `pytest` · `ruff` · `black` · `mypy` · `git` · `loguru` · `structlog`
 
 </details>
