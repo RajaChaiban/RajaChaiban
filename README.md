@@ -2,7 +2,7 @@
 
 **Finance × AI · New York**
 
-I'm an engineer in New York building where finance and AI meet. Most of what I make starts with a workflow that's slow or manual and ends as a system that actually runs: an agent loop doing the work, a FastAPI backend behind it, a Next.js front end on top, deployed on Vercel. I like owning the whole thing end to end, and I keep a human in the loop at the steps that can't be undone. And since I can't help rooting for my teams, a few of my repos are ML models trying to call games before they happen. ⚽ 🏀 🏈
+I'm an engineer in New York building where finance and AI meet. Most of what I make starts with a workflow that's slow or manual and ends as a system that actually runs: an agent loop doing the work, a FastAPI/Node.js backend behind it, a Next.js front end on top, deployed on Vercel. I like owning the whole thing end to end, and I keep a human in the loop at the steps that can't be undone. And since I can't help rooting for my teams, a few of my repos are ML models trying to call games before they happen. ⚽ 🏀 🏈
 
 ---
 
